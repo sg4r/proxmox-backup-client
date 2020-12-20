@@ -28,6 +28,8 @@ client version: 1.0.6
 ```
 # install binaries
 ```
+install -Dm755 "target/release/proxmox-backup-client" "/usr/local/bin/proxmox-backup-client"
+install -Dm755 "target/release/pxar" "/usr/local/bin/pxar"
 ```
 # make clean
 ```
