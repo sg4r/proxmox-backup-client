@@ -15,7 +15,7 @@ yum install git
 ## clone proxmox-backup-client cookbook
 ```
 git clone https://github.com/sg4r/proxmox-backup-client.git
-cd proxmox-backup-client.git
+cd proxmox-backup-client
 ```
 ## build
 ```
