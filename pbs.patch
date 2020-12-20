@@ -1,0 +1,132 @@
+diff -Naur -x .git -x target -x tests -x Cargo.lock proxmox-backup/.cargo/config proxmox-backup.m/.cargo/config
+--- proxmox-backup/.cargo/config        2020-12-14 15:46:42.308172309 +0100
++++ proxmox-backup.m/.cargo/config      2020-12-14 15:49:28.045185540 +0100
+@@ -1,5 +1,18 @@
+-[source]
+-[source.debian-packages]
+-directory = "/usr/share/cargo/registry"
+ [source.crates-io]
+-replace-with = "debian-packages"
++replace-with = "vendored-sources"
++
++[source."git://git.proxmox.com/git/pathpatterns.git"]
++git = "git://git.proxmox.com/git/pathpatterns.git"
++replace-with = "vendored-sources"
++
++[source."git://git.proxmox.com/git/proxmox-fuse.git"]
++git = "git://git.proxmox.com/git/proxmox-fuse.git"
++replace-with = "vendored-sources"
++
++[source."git://git.proxmox.com/git/pxar.git"]
++git = "git://git.proxmox.com/git/pxar.git"
++replace-with = "vendored-sources"
++
++[source.vendored-sources]
++directory = "vendor"
++
+
+diff -Naur -x .git -x target -x tests -x Cargo.lock proxmox-backup.m/Cargo.toml proxmox-backup/Cargo.toml
+--- proxmox-backup.m/Cargo.toml	2020-12-11 22:17:16.762282579 +0100
++++ proxmox-backup/Cargo.toml	2020-12-06 21:49:03.415494604 +0100
+@@ -23,7 +23,7 @@
+ path = "src/lib.rs"
+ 
+ [dependencies]
+-apt-pkg-native = "0.3.1" # custom patched version
++#apt-pkg-native = "0.3.1" # custom patched version
+ base64 = "0.12"
+ bitflags = "1.2.1"
+ bytes = "0.5"
+@@ -41,18 +41,22 @@
+ nix = "0.19"
+ num-traits = "0.2"
+ once_cell = "1.3.1"
+-openssl = "0.10"
++#openssl = "0.10"
++openssl = { version = "0.10", features = ["vendored"] }
+ pam = "0.7"
+ pam-sys = "0.5"
+ percent-encoding = "2.1"
+ pin-utils = "0.1.0"
+ pin-project = "0.4"
+-pathpatterns = "0.1.2"
+-proxmox = { version = "0.8.1", features = [ "sortable-macro", "api-macro", "websocket" ] }
++#pathpatterns = "0.1.2"
++pathpatterns = { version = "0.1.2", git = "git://git.proxmox.com/git/pathpatterns.git" }
++#proxmox = { version = "0.8.1", features = [ "sortable-macro", "api-macro", "websocket" ] }
+ #proxmox = { git = "git://git.proxmox.com/git/proxmox", version = "0.1.2", features = [ "sortable-macro", "api-macro" ] }
+-#proxmox = { path = "../proxmox/proxmox", features = [ "sortable-macro", "api-macro", "websocket" ] }
+-proxmox-fuse = "0.1.0"
+-pxar = { version = "0.6.1", features = [ "tokio-io", "futures-io" ] }
++proxmox = { path = "../proxmox/proxmox", features = [ "sortable-macro", "api-macro", "websocket" ] }
++#proxmox-fuse = "0.1.0"
++proxmox-fuse = { version = "0.1.0", git = "git://git.proxmox.com/git/proxmox-fuse.git" }
++#pxar = { version = "0.6.1", features = [ "tokio-io", "futures-io" ] }
++pxar = { version = "0.6.1", features = [ "tokio-io", "futures-io" ] , git = "git://git.proxmox.com/git/pxar.git"}
+ #pxar = { path = "../pxar", features = [ "tokio-io", "futures-io" ] }
+ regex = "1.2"
+ rustyline = "6"
+@@ -69,7 +73,8 @@
+ #valgrind_request = { git = "https://github.com/edef1c/libvalgrind_request", version = "1.1.0", optional = true }
+ walkdir = "2"
+ xdg = "2.2"
+-zstd = { version = "0.4", features = [ "bindgen" ] }
++#zstd = { version = "0.4", features = [ "bindgen" ] }
++zstd = "0.4"
+ nom = "5.1"
+ crossbeam-channel = "0.4"
+ 
+diff -Naur -x .git -x target -x tests -x Cargo.lock proxmox-backup.m/src/api2/node.rs proxmox-backup/src/api2/node.rs
+--- proxmox-backup.m/src/api2/node.rs	2020-12-11 22:16:37.394836134 +0100
++++ proxmox-backup/src/api2/node.rs	2020-12-06 19:29:23.184563136 +0100
+@@ -23,7 +23,7 @@
+ use crate::tools;
+ use crate::tools::ticket::{self, Empty, Ticket};
+ 
+-pub mod apt;
++//pub mod apt;
+ pub mod disks;
+ pub mod dns;
+ pub mod network;
+@@ -297,7 +297,7 @@
+ }
+ 
+ pub const SUBDIRS: SubdirMap = &[
+-    ("apt", &apt::ROUTER),
++    //("apt", &apt::ROUTER),
+     ("disks", &disks::ROUTER),
+     ("dns", &dns::ROUTER),
+     ("journal", &journal::ROUTER),
+diff -Naur -x .git -x target -x tests -x Cargo.lock proxmox-backup.m/src/tools/daemon.rs proxmox-backup/src/tools/daemon.rs
+--- proxmox-backup.m/src/tools/daemon.rs	2020-12-11 22:16:37.594838393 +0100
++++ proxmox-backup/src/tools/daemon.rs	2020-12-06 20:17:15.383493950 +0100
+@@ -19,7 +19,7 @@
+ use crate::server;
+ use crate::tools::{fd_change_cloexec, self};
+ 
+-#[link(name = "systemd")]
++//#[link(name = "systemd")]
+ extern "C" {
+     fn sd_journal_stream_fd(identifier: *const c_uchar, priority: c_int, level_prefix: c_int) -> c_int;
+ }
+@@ -335,7 +335,7 @@
+     }
+ }
+ 
+-#[link(name = "systemd")]
++//#[link(name = "systemd")]
+ extern "C" {
+     fn sd_notify(unset_environment: c_int, state: *const c_char) -> c_int;
+ }
+diff -Naur -x .git -x target -x tests -x Cargo.lock proxmox-backup.m/src/tools.rs proxmox-backup/src/tools.rs
+--- proxmox-backup.m/src/tools.rs	2020-12-11 22:16:37.593838382 +0100
++++ proxmox-backup/src/tools.rs	2020-12-06 21:06:58.596756644 +0100
+@@ -18,7 +18,7 @@
+ pub use proxmox::tools::fd::Fd;
+ 
+ pub mod acl;
+-pub mod apt;
++//pub mod apt;
+ pub mod async_io;
+ pub mod borrow;
+ pub mod cert;
