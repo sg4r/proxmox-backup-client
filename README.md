@@ -1,5 +1,5 @@
 # proxmox-backup-client
-CentOS 7 cookbook for build Client for Proxmox Backup Server. the client is written in the Rust programming language.
+CentOS 7 or 8 cookbook for build Client for Proxmox Backup Server. the client is written in the Rust programming language.
 
 ## install rust
 ```
