@@ -26,8 +26,8 @@ bash ./pbs.build.sh
 ./proxmox-backup/target/release/proxmox-backup-client version
 client version: 1.0.6
 ```
-## buildrpm
-you can build rpm. for this read [rpmbuild.md](rpmbuild.md)
+## generate-rpm
+you can build a rpm package. for this read [rpmbuild.md](rpmbuild.md)
 ## install binaries
 ```
 install -Dm755 "proxmox-backup/target/release/proxmox-backup-client" "/usr/local/sbin/proxmox-backup-client"
