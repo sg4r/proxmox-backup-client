@@ -37,7 +37,12 @@ dnf install rpmrebuild
 rpmrebuild -enp target/generate-rpm/proxmox-backup-1.0.6-1.x86_64.rpm
 ```
 ## modification
-add 2 lines after ```Requires:      /bin/sh``` and before ```#suggest```
+add 2 lines 
+```
+Requires:      libfuse3.so.3()(64bit)
+Requires:      libzstd.so.1()(64bit)
+``` 
+after ```Requires:      /bin/sh``` and before ```#suggest```
 ```
 Provides:      proxmox-backup = 1.0.6
 Provides:      proxmox-backup(x86_64) = 1.0.6
