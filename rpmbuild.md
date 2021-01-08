@@ -49,8 +49,10 @@ after ```Requires:      /bin/sh``` and before ```#suggest```
 Provides:      proxmox-backup = 1.0.6
 Provides:      proxmox-backup(x86_64) = 1.0.6
 Requires:      /bin/sh
+<div class="text-green mb-2">
 Requires:      libfuse3.so.3()(64bit)
 Requires:      libzstd.so.1()(64bit)
+</div>
 #suggest
 ```
 change Release from 1 to 1.2
