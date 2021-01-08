@@ -33,10 +33,12 @@ I have not found how to define the list of dependencies with rpm-generate. it is
 dnf install https://extras.getpagespeed.com/release-el8-latest.rpm
 # Install rpmrebuild rpm package:
 dnf install rpmrebuild
-# Spec file modification
-rpmrebuild -enp target/generate-rpm/proxmox-backup-1.0.6-1.x86_64.rpm
 ```
 ## modification
+Edit the spec file with the rpmrebuild command
+```
+rpmrebuild -enp target/generate-rpm/proxmox-backup-1.0.6-1.x86_64.rpm
+```
 add 2 lines 
 ```
 Requires:      libfuse3.so.3()(64bit)
@@ -57,13 +59,13 @@ Version:       1.0.6
 Release:       1.2
 License:       AGPL-3
 ```
-save the modification
+save the temporary file and answer y to build the new package
 ```
 "~/.tmp/rpmrebuild.62512/work/spec.2" 60L, 1144C written
 Do you want to continue ? (y/N) y
 result: /root/rpmbuild/RPMS/x86_64/proxmox-backup-1.0.6-1.2.x86_64.rpm
 ```
-## install from a new host
+## Install the package on a new host
 ```
 [centos@pbscl82 ~]$ sudo yum install ./proxmox-backup-1.0.6-1.2.x86_64.rpm
 Last metadata expiration check: 0:02:46 ago on mar. 05 janv. 2021 08:18:34 UTC.
