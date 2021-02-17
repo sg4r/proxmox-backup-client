@@ -27,8 +27,18 @@ bash ./pbs.build.sh
 client version: 1.0.6
 ```
 ## generate-rpm
-you can build a rpm package. for this read [rpmbuild.md](rpmbuild.md)
+build a rpm package with the executable files
+```
+cd proxmox-backup/
+cargo generate-rpm
+ll target/generate-rpm/
+total 10876
+-rw-r--r--. 1 root root 11134754 17 févr. 21:21 proxmox-backup-1.0.6-1.x86_64.rpm
+cd ..
+```
+to build a package with dependency support, read this [rpmbuild.md](rpmbuild.md)
 ## install binaries
+if you prefer to locally install the binaries, carry out these commands
 ```
 install -Dm755 "proxmox-backup/target/release/proxmox-backup-client" "/usr/local/sbin/proxmox-backup-client"
 install -Dm755 "proxmox-backup/target/release/pxar" "/usr/local/sbin/pxar"
