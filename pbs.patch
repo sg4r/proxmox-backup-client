@@ -62,7 +62,7 @@ diff -Naur -x .git -x target -x tests -x Cargo.lock proxmox-backup.m/Cargo.toml 
 +#proxmox-fuse = "0.1.0"
 +proxmox-fuse = { version = "0.1.0", git = "git://git.proxmox.com/git/proxmox-fuse.git" }
 +#pxar = { version = "0.6.1", features = [ "tokio-io", "futures-io" ] }
-+pxar = { version = "0.6.1", features = [ "tokio-io", "futures-io" ] , git = "git://git.proxmox.com/git/pxar.git"}
++pxar = { version = "0.6.1", features = [ "tokio-io", "futures-io" ] , git = "git://git.proxmox.com/git/pxar.git", rev = "4f2d271a9608b576bf2dad22672a930285b5d7dd"}
  #pxar = { path = "../pxar", features = [ "tokio-io", "futures-io" ] }
  regex = "1.2"
  rustyline = "6"
