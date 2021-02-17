@@ -66,7 +66,7 @@ diff -Naur -x .git -x target -x tests -x Cargo.lock proxmox-backup.m/Cargo.toml 
  #pxar = { path = "../pxar", features = [ "tokio-io", "futures-io" ] }
  regex = "1.2"
  rustyline = "6"
-@@ -69,7 +73,8 @@
+@@ -73,10 +73,17 @@
  #valgrind_request = { git = "https://github.com/edef1c/libvalgrind_request", version = "1.1.0", optional = true }
  walkdir = "2"
  xdg = "2.2"
@@ -75,6 +75,16 @@ diff -Naur -x .git -x target -x tests -x Cargo.lock proxmox-backup.m/Cargo.toml 
 +zstd = "0.4"
  nom = "5.1"
  crossbeam-channel = "0.4"
+ 
+ [features]
+ default = []
+ #valgrind = ["valgrind_request"]
++
++[package.metadata.generate-rpm]
++assets = [
++  { source = "target/release/pxar", dest = "/usr/local/sbin/pxar", mode = "0755" },
++  { source = "target/release/proxmox-backup-client", dest = "/usr/local/sbin/proxmox-backup-client", mode = "0755" }
++]
  
 diff -Naur -x .git -x target -x tests -x Cargo.lock proxmox-backup.m/src/api2/node.rs proxmox-backup/src/api2/node.rs
 --- proxmox-backup.m/src/api2/node.rs	2020-12-11 22:16:37.394836134 +0100
