@@ -1,26 +1,9 @@
 
 # Build rpm package for proxmox-backup-client
-A litel guide for build a rpm package for proxmox-backup-client
+A short guide to creating an rpm package for proxmox-backup-client with the addition of dependencies
 
-## Install cargo-generate-rpm
-After you have build and check the proxmox-backup-client with version option, install cargo-generate-rpm tools
-```
-cargo install cargo-generate-rpm
-```
-## Add  metadata for build package
-Edit Cargo.toml and add at the end metadata info
-```
-# tail Cargo.toml 
-default = []
-#valgrind = ["valgrind_request"]
-
-[package.metadata.generate-rpm]
-assets = [
-  { source = "target/release/pxar", dest = "/usr/local/sbin/pxar", mode = "0755" },
-  { source = "target/release/proxmox-backup-client", dest = "/usr/local/sbin/proxmox-backup-client", mode = "0755" }
-]
-```
 ## Generate rpm
+from the proxmox-backup directory use the ```cargo generate-rpm``` command to create an rpm package
 ```
 cargo generate-rpm
 ll target/generate-rpm/
