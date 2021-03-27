@@ -1,142 +1,914 @@
-diff -Naur -x .git -x target -x tests -x Cargo.lock proxmox-backup/.cargo/config proxmox-backup.m/.cargo/config
---- proxmox-backup/.cargo/config        2020-12-14 15:46:42.308172309 +0100
-+++ proxmox-backup.m/.cargo/config      2020-12-14 15:49:28.045185540 +0100
-@@ -1,5 +1,18 @@
+diff --git a/.cargo/config b/.cargo/config
+deleted file mode 100644
+index 3b5b6e48..00000000
+--- a/.cargo/config
++++ /dev/null
+@@ -1,5 +0,0 @@
 -[source]
 -[source.debian-packages]
 -directory = "/usr/share/cargo/registry"
- [source.crates-io]
+-[source.crates-io]
 -replace-with = "debian-packages"
-+replace-with = "vendored-sources"
-+
-+[source."git://git.proxmox.com/git/pathpatterns.git"]
-+git = "git://git.proxmox.com/git/pathpatterns.git"
-+replace-with = "vendored-sources"
-+
-+[source."git://git.proxmox.com/git/proxmox-fuse.git"]
-+git = "git://git.proxmox.com/git/proxmox-fuse.git"
-+replace-with = "vendored-sources"
-+
-+[source."git://git.proxmox.com/git/pxar.git"]
-+git = "git://git.proxmox.com/git/pxar.git"
-+replace-with = "vendored-sources"
-+
-+[source.vendored-sources]
-+directory = "vendor"
-+
-
-diff -Naur -x .git -x target -x tests -x Cargo.lock proxmox-backup.m/Cargo.toml proxmox-backup/Cargo.toml
---- proxmox-backup.m/Cargo.toml	2020-12-11 22:17:16.762282579 +0100
-+++ proxmox-backup/Cargo.toml	2020-12-06 21:49:03.415494604 +0100
-@@ -23,7 +23,7 @@
+diff --git a/Cargo.toml b/Cargo.toml
+index 9483831c..54073a6a 100644
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -23,7 +23,6 @@ name = "proxmox_backup"
  path = "src/lib.rs"
  
  [dependencies]
--apt-pkg-native = "0.3.1" # custom patched version
-+#apt-pkg-native = "0.3.1" # custom patched version
+-apt-pkg-native = "0.3.2"
  base64 = "0.12"
  bitflags = "1.2.1"
- bytes = "0.5"
-@@ -41,18 +41,22 @@
- nix = "0.19"
- num-traits = "0.2"
- once_cell = "1.3.1"
--openssl = "0.10"
-+#openssl = "0.10"
-+openssl = { version = "0.10", features = ["vendored"] }
- pam = "0.7"
- pam-sys = "0.5"
+ bytes = "1.0"
+@@ -47,12 +46,12 @@ pam-sys = "0.5"
  percent-encoding = "2.1"
  pin-utils = "0.1.0"
- pin-project = "0.4"
+ pin-project = "1.0"
 -pathpatterns = "0.1.2"
--proxmox = { version = "0.8.1", features = [ "sortable-macro", "api-macro", "websocket" ] }
-+#pathpatterns = "0.1.2"
+-proxmox = { version = "0.11.0", features = [ "sortable-macro", "api-macro", "websocket" ] }
 +pathpatterns = { version = "0.1.2", git = "git://git.proxmox.com/git/pathpatterns.git" }
-+#proxmox = { version = "0.8.1", features = [ "sortable-macro", "api-macro", "websocket" ] }
++proxmox = { version = "0.11.0", features = [ "sortable-macro", "api-macro" ], git = "git://git.proxmox.com/git/proxmox.git", rev = "1fce0ff41ddeb177f92874bf4e95a775cfd99c69" }
  #proxmox = { git = "git://git.proxmox.com/git/proxmox", version = "0.1.2", features = [ "sortable-macro", "api-macro" ] }
--#proxmox = { path = "../proxmox/proxmox", features = [ "sortable-macro", "api-macro", "websocket" ] }
--proxmox-fuse = "0.1.0"
--pxar = { version = "0.6.1", features = [ "tokio-io", "futures-io" ] }
-+proxmox = { path = "../proxmox/proxmox", features = [ "sortable-macro", "api-macro", "websocket" ] }
-+#proxmox-fuse = "0.1.0"
-+proxmox-fuse = { version = "0.1.0", git = "git://git.proxmox.com/git/proxmox-fuse.git" }
-+#pxar = { version = "0.6.1", features = [ "tokio-io", "futures-io" ] }
-+pxar = { version = "0.6.1", features = [ "tokio-io", "futures-io" ] , git = "git://git.proxmox.com/git/pxar.git", rev = "4f2d271a9608b576bf2dad22672a930285b5d7dd"}
- #pxar = { path = "../pxar", features = [ "tokio-io", "futures-io" ] }
+ #proxmox = { path = "../proxmox/proxmox", features = [ "sortable-macro", "api-macro", "websocket" ] }
+-proxmox-fuse = "0.1.1"
+-pxar = { version = "0.10.0", features = [ "tokio-io" ] }
++proxmox-fuse = { version = "0.1.1", git = "git://git.proxmox.com/git/proxmox-fuse.git" }
++pxar = { version = "0.10.0", features = [ "tokio-io" ] , git = "git://git.proxmox.com/git/pxar.git", rev = "64f8857c700675a26cf7676bb5edce7e3be8a487"}
+ #pxar = { path = "../pxar", features = [ "tokio-io" ] }
  regex = "1.2"
- rustyline = "6"
-@@ -73,10 +73,17 @@
- #valgrind_request = { git = "https://github.com/edef1c/libvalgrind_request", version = "1.1.0", optional = true }
- walkdir = "2"
- xdg = "2.2"
--zstd = { version = "0.4", features = [ "bindgen" ] }
-+#zstd = { version = "0.4", features = [ "bindgen" ] }
-+zstd = "0.4"
- nom = "5.1"
- crossbeam-channel = "0.4"
- 
- [features]
- default = []
- #valgrind = ["valgrind_request"]
-+
-+[package.metadata.generate-rpm]
-+assets = [
-+  { source = "target/release/pxar", dest = "/usr/local/sbin/pxar", mode = "0755" },
-+  { source = "target/release/proxmox-backup-client", dest = "/usr/local/sbin/proxmox-backup-client", mode = "0755" }
-+]
- 
-diff -Naur -x .git -x target -x tests -x Cargo.lock proxmox-backup.m/src/api2/node.rs proxmox-backup/src/api2/node.rs
---- proxmox-backup.m/src/api2/node.rs	2020-12-11 22:16:37.394836134 +0100
-+++ proxmox-backup/src/api2/node.rs	2020-12-06 19:29:23.184563136 +0100
-@@ -23,7 +23,7 @@
+ rustyline = "7"
+diff --git a/src/api2/node.rs b/src/api2/node.rs
+index 1f3e46a9..ce4e449f 100644
+--- a/src/api2/node.rs
++++ b/src/api2/node.rs
+@@ -26,7 +26,6 @@ use crate::server::WorkerTask;
  use crate::tools;
  use crate::tools::ticket::{self, Empty, Ticket};
  
 -pub mod apt;
-+//pub mod apt;
  pub mod disks;
  pub mod dns;
  pub mod network;
-@@ -297,7 +297,7 @@
+@@ -313,7 +312,6 @@ fn upgrade_to_websocket(
  }
  
  pub const SUBDIRS: SubdirMap = &[
 -    ("apt", &apt::ROUTER),
-+    //("apt", &apt::ROUTER),
      ("disks", &disks::ROUTER),
      ("dns", &dns::ROUTER),
      ("journal", &journal::ROUTER),
-diff -Naur -x .git -x target -x tests -x Cargo.lock proxmox-backup.m/src/tools/daemon.rs proxmox-backup/src/tools/daemon.rs
---- proxmox-backup.m/src/tools/daemon.rs	2020-12-11 22:16:37.594838393 +0100
-+++ proxmox-backup/src/tools/daemon.rs	2020-12-06 20:17:15.383493950 +0100
-@@ -19,7 +19,7 @@
- use crate::server;
- use crate::tools::{fd_change_cloexec, self};
- 
--#[link(name = "systemd")]
-+//#[link(name = "systemd")]
- extern "C" {
-     fn sd_journal_stream_fd(identifier: *const c_uchar, priority: c_int, level_prefix: c_int) -> c_int;
- }
-@@ -335,7 +335,7 @@
-     }
- }
- 
--#[link(name = "systemd")]
-+//#[link(name = "systemd")]
- extern "C" {
-     fn sd_notify(unset_environment: c_int, state: *const c_char) -> c_int;
- }
-diff -Naur -x .git -x target -x tests -x Cargo.lock proxmox-backup.m/src/tools.rs proxmox-backup/src/tools.rs
---- proxmox-backup.m/src/tools.rs	2020-12-11 22:16:37.593838382 +0100
-+++ proxmox-backup/src/tools.rs	2020-12-06 21:06:58.596756644 +0100
-@@ -18,7 +18,7 @@
+diff --git a/src/api2/node/apt.rs b/src/api2/node/apt.rs
+deleted file mode 100644
+index e77b89fa..00000000
+--- a/src/api2/node/apt.rs
++++ /dev/null
+@@ -1,364 +0,0 @@
+-use anyhow::{Error, bail, format_err};
+-use serde_json::{json, Value};
+-use std::collections::HashMap;
+-
+-use proxmox::list_subdirs_api_method;
+-use proxmox::api::{api, RpcEnvironment, RpcEnvironmentType, Permission};
+-use proxmox::api::router::{Router, SubdirMap};
+-
+-use crate::server::WorkerTask;
+-use crate::tools::{apt, http, subscription};
+-
+-use crate::config::acl::{PRIV_SYS_AUDIT, PRIV_SYS_MODIFY};
+-use crate::api2::types::{Authid, APTUpdateInfo, NODE_SCHEMA, UPID_SCHEMA};
+-
+-#[api(
+-    input: {
+-        properties: {
+-            node: {
+-                schema: NODE_SCHEMA,
+-            },
+-        },
+-    },
+-    returns: {
+-        description: "A list of packages with available updates.",
+-        type: Array,
+-        items: {
+-            type: APTUpdateInfo
+-        },
+-    },
+-    protected: true,
+-    access: {
+-        permission: &Permission::Privilege(&[], PRIV_SYS_AUDIT, false),
+-    },
+-)]
+-/// List available APT updates
+-fn apt_update_available(_param: Value) -> Result<Value, Error> {
+-
+-    if let Ok(false) = apt::pkg_cache_expired() {
+-        if let Ok(Some(cache)) = apt::read_pkg_state() {
+-            return Ok(json!(cache.package_status));
+-        }
+-    }
+-
+-    let cache = apt::update_cache()?;
+-
+-    Ok(json!(cache.package_status))
+-}
+-
+-fn do_apt_update(worker: &WorkerTask, quiet: bool) -> Result<(), Error> {
+-    if !quiet { worker.log("starting apt-get update") }
+-
+-    // TODO: set proxy /etc/apt/apt.conf.d/76pbsproxy like PVE
+-
+-    let mut command = std::process::Command::new("apt-get");
+-    command.arg("update");
+-
+-    // apt "errors" quite easily, and run_command is a bit rigid, so handle this inline for now.
+-    let output = command.output()
+-        .map_err(|err| format_err!("failed to execute {:?} - {}", command, err))?;
+-
+-    if !quiet {
+-        worker.log(String::from_utf8(output.stdout)?);
+-    }
+-
+-    // TODO: improve run_command to allow outputting both, stderr and stdout
+-    if !output.status.success() {
+-        if output.status.code().is_some() {
+-            let msg = String::from_utf8(output.stderr)
+-                .map(|m| if m.is_empty() { String::from("no error message") } else { m })
+-                .unwrap_or_else(|_| String::from("non utf8 error message (suppressed)"));
+-            worker.warn(msg);
+-        } else {
+-            bail!("terminated by signal");
+-        }
+-    }
+-    Ok(())
+-}
+-
+-#[api(
+-    protected: true,
+-    input: {
+-        properties: {
+-            node: {
+-                schema: NODE_SCHEMA,
+-            },
+-            notify: {
+-                type: bool,
+-                description: r#"Send notification mail about new package updates available to the
+-                    email address configured for 'root@pam')."#,
+-                default: false,
+-                optional: true,
+-            },
+-            quiet: {
+-                description: "Only produces output suitable for logging, omitting progress indicators.",
+-                type: bool,
+-                default: false,
+-                optional: true,
+-            },
+-        },
+-    },
+-    returns: {
+-        schema: UPID_SCHEMA,
+-    },
+-    access: {
+-        permission: &Permission::Privilege(&[], PRIV_SYS_MODIFY, false),
+-    },
+-)]
+-/// Update the APT database
+-pub fn apt_update_database(
+-    notify: bool,
+-    quiet: bool,
+-    rpcenv: &mut dyn RpcEnvironment,
+-) -> Result<String, Error> {
+-
+-    let auth_id: Authid = rpcenv.get_auth_id().unwrap().parse()?;
+-    let to_stdout = rpcenv.env_type() == RpcEnvironmentType::CLI;
+-
+-    let upid_str = WorkerTask::new_thread("aptupdate", None, auth_id, to_stdout, move |worker| {
+-        do_apt_update(&worker, quiet)?;
+-
+-        let mut cache = apt::update_cache()?;
+-
+-        if notify {
+-            let mut notified = match cache.notified {
+-                Some(notified) => notified,
+-                None => std::collections::HashMap::new(),
+-            };
+-            let mut to_notify: Vec<&APTUpdateInfo> = Vec::new();
+-
+-            for pkg in &cache.package_status {
+-                match notified.insert(pkg.package.to_owned(), pkg.version.to_owned()) {
+-                    Some(notified_version) => {
+-                        if notified_version != pkg.version {
+-                            to_notify.push(pkg);
+-                        }
+-                    },
+-                    None => to_notify.push(pkg),
+-                }
+-            }
+-            if !to_notify.is_empty() {
+-                to_notify.sort_unstable_by_key(|k| &k.package);
+-                crate::server::send_updates_available(&to_notify)?;
+-            }
+-            cache.notified = Some(notified);
+-            apt::write_pkg_cache(&cache)?;
+-        }
+-
+-        Ok(())
+-    })?;
+-
+-    Ok(upid_str)
+-}
+-
+-#[api(
+-    input: {
+-        properties: {
+-            node: {
+-                schema: NODE_SCHEMA,
+-            },
+-            name: {
+-                description: "Package name to get changelog of.",
+-                type: String,
+-            },
+-            version: {
+-                description: "Package version to get changelog of. Omit to use candidate version.",
+-                type: String,
+-                optional: true,
+-            },
+-        },
+-    },
+-    returns: {
+-        schema: UPID_SCHEMA,
+-    },
+-    access: {
+-        permission: &Permission::Privilege(&[], PRIV_SYS_MODIFY, false),
+-    },
+-)]
+-/// Retrieve the changelog of the specified package.
+-fn apt_get_changelog(
+-    param: Value,
+-) -> Result<Value, Error> {
+-
+-    let name = crate::tools::required_string_param(&param, "name")?.to_owned();
+-    let version = param["version"].as_str();
+-
+-    let pkg_info = apt::list_installed_apt_packages(|data| {
+-        match version {
+-            Some(version) => version == data.active_version,
+-            None => data.active_version == data.candidate_version
+-        }
+-    }, Some(&name));
+-
+-    if pkg_info.is_empty() {
+-        bail!("Package '{}' not found", name);
+-    }
+-
+-    let changelog_url = &pkg_info[0].change_log_url;
+-    // FIXME: use 'apt-get changelog' for proxmox packages as well, once repo supports it
+-    if changelog_url.starts_with("http://download.proxmox.com/") {
+-        let changelog = crate::tools::runtime::block_on(http::get_string(changelog_url, None))
+-            .map_err(|err| format_err!("Error downloading changelog from '{}': {}", changelog_url, err))?;
+-        Ok(json!(changelog))
+-
+-    } else if changelog_url.starts_with("https://enterprise.proxmox.com/") {
+-        let sub = match subscription::read_subscription()? {
+-            Some(sub) => sub,
+-            None => bail!("cannot retrieve changelog from enterprise repo: no subscription info found")
+-        };
+-        let (key, id) = match sub.key {
+-            Some(key) => {
+-                match sub.serverid {
+-                    Some(id) => (key, id),
+-                    None =>
+-                        bail!("cannot retrieve changelog from enterprise repo: no server id found")
+-                }
+-            },
+-            None => bail!("cannot retrieve changelog from enterprise repo: no subscription key found")
+-        };
+-
+-        let mut auth_header = HashMap::new();
+-        auth_header.insert("Authorization".to_owned(),
+-            format!("Basic {}", base64::encode(format!("{}:{}", key, id))));
+-
+-        let changelog = crate::tools::runtime::block_on(http::get_string(changelog_url, Some(&auth_header)))
+-            .map_err(|err| format_err!("Error downloading changelog from '{}': {}", changelog_url, err))?;
+-        Ok(json!(changelog))
+-
+-    } else {
+-        let mut command = std::process::Command::new("apt-get");
+-        command.arg("changelog");
+-        command.arg("-qq"); // don't display download progress
+-        command.arg(name);
+-        let output = crate::tools::run_command(command, None)?;
+-        Ok(json!(output))
+-    }
+-}
+-
+-#[api(
+-    input: {
+-        properties: {
+-            node: {
+-                schema: NODE_SCHEMA,
+-            },
+-        },
+-    },
+-    returns: {
+-        description: "List of more relevant packages.",
+-        type: Array,
+-        items: {
+-            type: APTUpdateInfo,
+-        },
+-    },
+-    access: {
+-        permission: &Permission::Privilege(&[], PRIV_SYS_AUDIT, false),
+-    },
+-)]
+-/// Get package information for important Proxmox Backup Server packages.
+-pub fn get_versions() -> Result<Vec<APTUpdateInfo>, Error> {
+-    const PACKAGES: &[&str] = &[
+-        "ifupdown2",
+-        "libjs-extjs",
+-        "proxmox-backup",
+-        "proxmox-backup-docs",
+-        "proxmox-backup-client",
+-        "proxmox-backup-server",
+-        "proxmox-mini-journalreader",
+-        "proxmox-widget-toolkit",
+-        "pve-xtermjs",
+-        "smartmontools",
+-        "zfsutils-linux",
+-    ];
+-
+-    fn unknown_package(package: String, extra_info: Option<String>) -> APTUpdateInfo {
+-        APTUpdateInfo {
+-            package,
+-            title: "unknown".into(),
+-            arch: "unknown".into(),
+-            description: "unknown".into(),
+-            version: "unknown".into(),
+-            old_version: "unknown".into(),
+-            origin: "unknown".into(),
+-            priority: "unknown".into(),
+-            section: "unknown".into(),
+-            change_log_url: "unknown".into(),
+-            extra_info,
+-        }
+-    }
+-
+-    let is_kernel = |name: &str| name.starts_with("pve-kernel-");
+-
+-    let mut packages: Vec<APTUpdateInfo> = Vec::new();
+-    let pbs_packages = apt::list_installed_apt_packages(
+-        |filter| {
+-            filter.installed_version == Some(filter.active_version)
+-                && (is_kernel(filter.package) || PACKAGES.contains(&filter.package))
+-        },
+-        None,
+-    );
+-
+-    let running_kernel = format!(
+-        "running kernel: {}",
+-        nix::sys::utsname::uname().release().to_owned()
+-    );
+-    if let Some(proxmox_backup) = pbs_packages.iter().find(|pkg| pkg.package == "proxmox-backup") {
+-        let mut proxmox_backup = proxmox_backup.clone();
+-        proxmox_backup.extra_info = Some(running_kernel);
+-        packages.push(proxmox_backup);
+-    } else {
+-        packages.push(unknown_package("proxmox-backup".into(), Some(running_kernel)));
+-    }
+-
+-    let version = crate::api2::version::PROXMOX_PKG_VERSION;
+-    let release = crate::api2::version::PROXMOX_PKG_RELEASE;
+-    let daemon_version_info = Some(format!("running version: {}.{}", version, release));
+-    if let Some(pkg) = pbs_packages.iter().find(|pkg| pkg.package == "proxmox-backup-server") {
+-        let mut pkg = pkg.clone();
+-        pkg.extra_info = daemon_version_info;
+-        packages.push(pkg);
+-    } else {
+-        packages.push(unknown_package("proxmox-backup".into(), daemon_version_info));
+-    }
+-
+-    let mut kernel_pkgs: Vec<APTUpdateInfo> = pbs_packages
+-        .iter()
+-        .filter(|pkg| is_kernel(&pkg.package))
+-        .cloned()
+-        .collect();
+-    // make sure the cache mutex gets dropped before the next call to list_installed_apt_packages
+-    {
+-        let cache = apt_pkg_native::Cache::get_singleton();
+-        kernel_pkgs.sort_by(|left, right| {
+-            cache
+-                .compare_versions(&left.old_version, &right.old_version)
+-                .reverse()
+-        });
+-    }
+-    packages.append(&mut kernel_pkgs);
+-
+-    // add entry for all packages we're interested in, even if not installed
+-    for pkg in PACKAGES.iter() {
+-        if pkg == &"proxmox-backup" || pkg == &"proxmox-backup-server" {
+-            continue;
+-        }
+-        match pbs_packages.iter().find(|item| &item.package == pkg) {
+-            Some(apt_pkg) => packages.push(apt_pkg.to_owned()),
+-            None => packages.push(unknown_package(pkg.to_string(), None)),
+-        }
+-    }
+-
+-    Ok(packages)
+-}
+-
+-const SUBDIRS: SubdirMap = &[
+-    ("changelog", &Router::new().get(&API_METHOD_APT_GET_CHANGELOG)),
+-    ("update", &Router::new()
+-        .get(&API_METHOD_APT_UPDATE_AVAILABLE)
+-        .post(&API_METHOD_APT_UPDATE_DATABASE)
+-    ),
+-    ("versions", &Router::new().get(&API_METHOD_GET_VERSIONS)),
+-];
+-
+-pub const ROUTER: Router = Router::new()
+-    .get(&list_subdirs_api_method!(SUBDIRS))
+-    .subdirs(SUBDIRS);
+diff --git a/src/bin/proxmox-daily-update.rs b/src/bin/proxmox-daily-update.rs
+deleted file mode 100644
+index 83c6b80c..00000000
+--- a/src/bin/proxmox-daily-update.rs
++++ /dev/null
+@@ -1,70 +0,0 @@
+-use anyhow::Error;
+-use serde_json::{json, Value};
+-
+-use proxmox::api::{cli::*, RpcEnvironment, ApiHandler};
+-
+-use proxmox_backup::api2;
+-use proxmox_backup::tools::subscription;
+-
+-async fn wait_for_local_worker(upid_str: &str) -> Result<(), Error> {
+-    let upid: proxmox_backup::server::UPID = upid_str.parse()?;
+-    let sleep_duration = core::time::Duration::new(0, 100_000_000);
+-
+-    loop {
+-        if !proxmox_backup::server::worker_is_active_local(&upid) {
+-            break;
+-        }
+-        tokio::time::sleep(sleep_duration).await;
+-    }
+-    Ok(())
+-}
+-
+-/// Daily update
+-async fn do_update(
+-    rpcenv: &mut dyn RpcEnvironment,
+-) -> Result<Value, Error> {
+-    let param = json!({});
+-
+-    let method = &api2::node::subscription::API_METHOD_CHECK_SUBSCRIPTION;
+-    let _res = match method.handler {
+-        ApiHandler::Sync(handler) => (handler)(param, method, rpcenv)?,
+-        _ => unreachable!(),
+-    };
+-
+-    let notify = match subscription::read_subscription() {
+-        Ok(Some(subscription)) => subscription.status == subscription::SubscriptionStatus::ACTIVE,
+-        Ok(None) => false,
+-        Err(err) => {
+-            eprintln!("Error reading subscription - {}", err);
+-            false
+-        },
+-    };
+-
+-    let param = json!({
+-        "notify": notify,
+-    });
+-    let method = &api2::node::apt::API_METHOD_APT_UPDATE_DATABASE;
+-    let upid = match method.handler {
+-        ApiHandler::Sync(handler) => (handler)(param, method, rpcenv)?,
+-        _ => unreachable!(),
+-    };
+-    wait_for_local_worker(upid.as_str().unwrap()).await?;
+-
+-    // TODO: certificate checks/renewal/... ?
+-
+-    // TODO: cleanup tasks like in PVE?
+-
+-    Ok(Value::Null)
+-}
+-
+-fn main() {
+-    proxmox_backup::tools::setup_safe_path_env();
+-
+-    let mut rpcenv = CliEnvironment::new();
+-    rpcenv.set_auth_id(Some(String::from("root@pam")));
+-
+-    if let Err(err) = proxmox_backup::tools::runtime::main(do_update(&mut rpcenv)) {
+-        eprintln!("error during update: {}", err);
+-        std::process::exit(1);
+-    }
+-}
+diff --git a/src/tools.rs b/src/tools.rs
+index cc782da2..b79c88d4 100644
+--- a/src/tools.rs
++++ b/src/tools.rs
+@@ -18,7 +18,6 @@ use percent_encoding::{utf8_percent_encode, AsciiSet};
  pub use proxmox::tools::fd::Fd;
  
  pub mod acl;
 -pub mod apt;
-+//pub mod apt;
  pub mod async_io;
  pub mod borrow;
  pub mod cert;
+diff --git a/src/tools/apt.rs b/src/tools/apt.rs
+deleted file mode 100644
+index d725639a..00000000
+--- a/src/tools/apt.rs
++++ /dev/null
+@@ -1,370 +0,0 @@
+-use std::collections::HashSet;
+-use std::collections::HashMap;
+-
+-use anyhow::{Error, bail, format_err};
+-use apt_pkg_native::Cache;
+-
+-use proxmox::const_regex;
+-use proxmox::tools::fs::{file_read_optional_string, replace_file, CreateOptions};
+-
+-use crate::api2::types::APTUpdateInfo;
+-
+-const APT_PKG_STATE_FN: &str = "/var/lib/proxmox-backup/pkg-state.json";
+-
+-#[derive(Debug, serde::Serialize, serde::Deserialize)]
+-/// Some information we cache about the package (update) state, like what pending update version
+-/// we already notfied an user about
+-pub struct PkgState {
+-    /// simple map from package name to most recently notified (emailed) version
+-    pub notified: Option<HashMap<String, String>>,
+-    /// A list of pending updates
+-    pub package_status: Vec<APTUpdateInfo>,
+-}
+-
+-pub fn write_pkg_cache(state: &PkgState) -> Result<(), Error> {
+-    let serialized_state = serde_json::to_string(state)?;
+-
+-    replace_file(APT_PKG_STATE_FN, &serialized_state.as_bytes(), CreateOptions::new())
+-        .map_err(|err| format_err!("Error writing package cache - {}", err))?;
+-    Ok(())
+-}
+-
+-pub fn read_pkg_state() -> Result<Option<PkgState>, Error> {
+-    let serialized_state = match file_read_optional_string(&APT_PKG_STATE_FN) {
+-        Ok(Some(raw)) => raw,
+-        Ok(None) => return Ok(None),
+-        Err(err) => bail!("could not read cached package state file - {}", err),
+-    };
+-
+-    serde_json::from_str(&serialized_state)
+-        .map(Some)
+-        .map_err(|err| format_err!("could not parse cached package status - {}", err))
+-}
+-
+-pub fn pkg_cache_expired () -> Result<bool, Error> {
+-    if let Ok(pbs_cache) = std::fs::metadata(APT_PKG_STATE_FN) {
+-        let apt_pkgcache = std::fs::metadata("/var/cache/apt/pkgcache.bin")?;
+-        let dpkg_status = std::fs::metadata("/var/lib/dpkg/status")?;
+-
+-        let mtime = pbs_cache.modified()?;
+-
+-        if apt_pkgcache.modified()? <= mtime && dpkg_status.modified()? <= mtime {
+-            return Ok(false);
+-        }
+-    }
+-    Ok(true)
+-}
+-
+-pub fn update_cache() -> Result<PkgState, Error> {
+-        // update our cache
+-        let all_upgradeable = list_installed_apt_packages(|data| {
+-            data.candidate_version == data.active_version &&
+-            data.installed_version != Some(data.candidate_version)
+-        }, None);
+-
+-        let cache = match read_pkg_state() {
+-            Ok(Some(mut cache)) => {
+-                cache.package_status = all_upgradeable;
+-                cache
+-            },
+-            _ => PkgState {
+-                notified: None,
+-                package_status: all_upgradeable,
+-            },
+-        };
+-        write_pkg_cache(&cache)?;
+-        Ok(cache)
+-}
+-
+-
+-const_regex! {
+-    VERSION_EPOCH_REGEX = r"^\d+:";
+-    FILENAME_EXTRACT_REGEX = r"^.*/.*?_(.*)_Packages$";
+-}
+-
+-// FIXME: once the 'changelog' API call switches over to 'apt-get changelog' only,
+-// consider removing this function entirely, as it's value is never used anywhere
+-// then (widget-toolkit doesn't use the value either)
+-fn get_changelog_url(
+-    package: &str,
+-    filename: &str,
+-    version: &str,
+-    origin: &str,
+-    component: &str,
+-) -> Result<String, Error> {
+-    if origin == "" {
+-        bail!("no origin available for package {}", package);
+-    }
+-
+-    if origin == "Debian" {
+-        let mut command = std::process::Command::new("apt-get");
+-        command.arg("changelog");
+-        command.arg("--print-uris");
+-        command.arg(package);
+-        let output = crate::tools::run_command(command, None)?; // format: 'http://foo/bar' package.changelog
+-        let output = match output.splitn(2, ' ').next() {
+-            Some(output) => {
+-                if output.len() < 2 {
+-                    bail!("invalid output (URI part too short) from 'apt-get changelog --print-uris': {}", output)
+-                }
+-                output[1..output.len()-1].to_owned()
+-            },
+-            None => bail!("invalid output from 'apt-get changelog --print-uris': {}", output)
+-        };
+-        return Ok(output);
+-    } else if origin == "Proxmox" {
+-        // FIXME: Use above call to 'apt changelog <pkg> --print-uris' as well.
+-        // Currently not possible as our packages do not have a URI set in their Release file.
+-        let version = (VERSION_EPOCH_REGEX.regex_obj)().replace_all(version, "");
+-
+-        let base = match (FILENAME_EXTRACT_REGEX.regex_obj)().captures(filename) {
+-            Some(captures) => {
+-                let base_capture = captures.get(1);
+-                match base_capture {
+-                    Some(base_underscore) => base_underscore.as_str().replace("_", "/"),
+-                    None => bail!("incompatible filename, cannot find regex group")
+-                }
+-            },
+-            None => bail!("incompatible filename, doesn't match regex")
+-        };
+-
+-        if component == "pbs-enterprise" {
+-            return Ok(format!("https://enterprise.proxmox.com/{}/{}_{}.changelog",
+-                              base, package, version));
+-        } else {
+-            return Ok(format!("http://download.proxmox.com/{}/{}_{}.changelog",
+-                              base, package, version));
+-        }
+-    }
+-
+-    bail!("unknown origin ({}) or component ({})", origin, component)
+-}
+-
+-pub struct FilterData<'a> {
+-    /// package name
+-    pub package: &'a str,
+-    /// this is version info returned by APT
+-    pub installed_version: Option<&'a str>,
+-    pub candidate_version: &'a str,
+-
+-    /// this is the version info the filter is supposed to check
+-    pub active_version: &'a str,
+-}
+-
+-enum PackagePreSelect {
+-    OnlyInstalled,
+-    OnlyNew,
+-    All,
+-}
+-
+-pub fn list_installed_apt_packages<F: Fn(FilterData) -> bool>(
+-    filter: F,
+-    only_versions_for: Option<&str>,
+-) -> Vec<APTUpdateInfo> {
+-
+-    let mut ret = Vec::new();
+-    let mut depends = HashSet::new();
+-
+-    // note: this is not an 'apt update', it just re-reads the cache from disk
+-    let mut cache = Cache::get_singleton();
+-    cache.reload();
+-
+-    let mut cache_iter = match only_versions_for {
+-        Some(name) => cache.find_by_name(name),
+-        None => cache.iter()
+-    };
+-
+-    loop {
+-
+-        match cache_iter.next() {
+-            Some(view) => {
+-                let di = if only_versions_for.is_some() {
+-                    query_detailed_info(
+-                        PackagePreSelect::All,
+-                        &filter,
+-                        view,
+-                        None
+-                    )
+-                } else {
+-                    query_detailed_info(
+-                        PackagePreSelect::OnlyInstalled,
+-                        &filter,
+-                        view,
+-                        Some(&mut depends)
+-                    )
+-                };
+-                if let Some(info) = di {
+-                    ret.push(info);
+-                }
+-
+-                if only_versions_for.is_some() {
+-                    break;
+-                }
+-            },
+-            None => {
+-                drop(cache_iter);
+-                // also loop through missing dependencies, as they would be installed
+-                for pkg in depends.iter() {
+-                    let mut iter = cache.find_by_name(&pkg);
+-                    let view = match iter.next() {
+-                        Some(view) => view,
+-                        None => continue // package not found, ignore
+-                    };
+-
+-                    let di = query_detailed_info(
+-                        PackagePreSelect::OnlyNew,
+-                        &filter,
+-                        view,
+-                        None
+-                    );
+-                    if let Some(info) = di {
+-                        ret.push(info);
+-                    }
+-                }
+-                break;
+-            }
+-        }
+-    }
+-
+-    ret
+-}
+-
+-fn query_detailed_info<'a, F, V>(
+-    pre_select: PackagePreSelect,
+-    filter: F,
+-    view: V,
+-    depends: Option<&mut HashSet<String>>,
+-) -> Option<APTUpdateInfo>
+-where
+-    F: Fn(FilterData) -> bool,
+-    V: std::ops::Deref<Target = apt_pkg_native::sane::PkgView<'a>>
+-{
+-    let current_version = view.current_version();
+-    let candidate_version = view.candidate_version();
+-
+-    let (current_version, candidate_version) = match pre_select {
+-        PackagePreSelect::OnlyInstalled => match (current_version, candidate_version) {
+-            (Some(cur), Some(can)) => (Some(cur), can), // package installed and there is an update
+-            (Some(cur), None) => (Some(cur.clone()), cur), // package installed and up-to-date
+-            (None, Some(_)) => return None, // package could be installed
+-            (None, None) => return None, // broken
+-        },
+-        PackagePreSelect::OnlyNew => match (current_version, candidate_version) {
+-            (Some(_), Some(_)) => return None,
+-            (Some(_), None) => return None,
+-            (None, Some(can)) => (None, can),
+-            (None, None) => return None,
+-        },
+-        PackagePreSelect::All => match (current_version, candidate_version) {
+-            (Some(cur), Some(can)) => (Some(cur), can),
+-            (Some(cur), None) => (Some(cur.clone()), cur),
+-            (None, Some(can)) => (None, can),
+-            (None, None) => return None,
+-        },
+-    };
+-
+-    // get additional information via nested APT 'iterators'
+-    let mut view_iter = view.versions();
+-    while let Some(ver) = view_iter.next() {
+-
+-        let package = view.name();
+-        let version = ver.version();
+-        let mut origin_res = "unknown".to_owned();
+-        let mut section_res = "unknown".to_owned();
+-        let mut priority_res = "unknown".to_owned();
+-        let mut change_log_url = "".to_owned();
+-        let mut short_desc = package.clone();
+-        let mut long_desc = "".to_owned();
+-
+-        let fd = FilterData {
+-            package: package.as_str(),
+-            installed_version: current_version.as_deref(),
+-            candidate_version: &candidate_version,
+-            active_version: &version,
+-        };
+-
+-        if filter(fd) {
+-            if let Some(section) = ver.section() {
+-                section_res = section;
+-            }
+-
+-            if let Some(prio) = ver.priority_type() {
+-                priority_res = prio;
+-            }
+-
+-            // assume every package has only one origin file (not
+-            // origin, but origin *file*, for some reason those seem to
+-            // be different concepts in APT)
+-            let mut origin_iter = ver.origin_iter();
+-            let origin = origin_iter.next();
+-            if let Some(origin) = origin {
+-
+-                if let Some(sd) = origin.short_desc() {
+-                    short_desc = sd;
+-                }
+-
+-                if let Some(ld) = origin.long_desc() {
+-                    long_desc = ld;
+-                }
+-
+-                // the package files appear in priority order, meaning
+-                // the one for the candidate version is first - this is fine
+-                // however, as the source package should be the same for all
+-                // versions anyway
+-                let mut pkg_iter = origin.file();
+-                let pkg_file = pkg_iter.next();
+-                if let Some(pkg_file) = pkg_file {
+-                    if let Some(origin_name) = pkg_file.origin() {
+-                        origin_res = origin_name;
+-                    }
+-
+-                    let filename = pkg_file.file_name();
+-                    let component = pkg_file.component();
+-
+-                    // build changelog URL from gathered information
+-                    // ignore errors, use empty changelog instead
+-                    let url = get_changelog_url(&package, &filename,
+-                        &version, &origin_res, &component);
+-                    if let Ok(url) = url {
+-                        change_log_url = url;
+-                    }
+-                }
+-            }
+-
+-            if let Some(depends) = depends {
+-                let mut dep_iter = ver.dep_iter();
+-                loop {
+-                    let dep = match dep_iter.next() {
+-                        Some(dep) if dep.dep_type() != "Depends" => continue,
+-                        Some(dep) => dep,
+-                        None => break
+-                    };
+-
+-                    let dep_pkg = dep.target_pkg();
+-                    let name = dep_pkg.name();
+-
+-                    depends.insert(name);
+-                }
+-            }
+-
+-            return Some(APTUpdateInfo {
+-                package,
+-                title: short_desc,
+-                arch: view.arch(),
+-                description: long_desc,
+-                change_log_url,
+-                origin: origin_res,
+-                version: candidate_version.clone(),
+-                old_version: match current_version {
+-                    Some(vers) => vers,
+-                    None => "".to_owned()
+-                },
+-                priority: priority_res,
+-                section: section_res,
+-                extra_info: None,
+-            });
+-        }
+-    }
+-
+-    None
+-}
+diff --git a/src/tools/daemon.rs b/src/tools/daemon.rs
+index d298bf16..73699f8e 100644
+--- a/src/tools/daemon.rs
++++ b/src/tools/daemon.rs
+@@ -19,7 +19,6 @@ use proxmox::tools::io::{ReadExt, WriteExt};
+ use crate::server;
+ use crate::tools::{fd_change_cloexec, self};
+ 
+-#[link(name = "systemd")]
+ extern "C" {
+     fn sd_journal_stream_fd(identifier: *const c_uchar, priority: c_int, level_prefix: c_int) -> c_int;
+ }
+@@ -346,7 +345,6 @@ async fn wait_service_is_not_state(service: &str, state: &str) -> Result<(), Err
+     Ok(())
+ }
+ 
+-#[link(name = "systemd")]
+ extern "C" {
+     fn sd_notify(unset_environment: c_int, state: *const c_char) -> c_int;
+ }
