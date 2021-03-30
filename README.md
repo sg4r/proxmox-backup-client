@@ -8,7 +8,7 @@ source $HOME/.cargo/env
 ```
 ## install depends
 ```
-yum install systemd-devel clang-devel libzstd-devel libacl-devel pam-devel fuse3-devel libuuid-devel
+yum install systemd-devel clang-devel libzstd-devel libacl-devel pam-devel fuse3-devel libuuid-devel openssl-devel
 yum groupinstall 'Development Tools'
 yum install git
 ```
