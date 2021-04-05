@@ -1,6 +1,9 @@
 # proxmox-backup-client
 CentOS 7 or 8 cookbook for build Client for Proxmox Backup Server. the client is written in the Rust programming language.
 
+## rpm package
+rpm package are available in assets of release [v1.0.11](https://github.com/sg4r/proxmox-backup-client/releases/tag/v1.0.11)
+
 ## install rust
 ```
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
