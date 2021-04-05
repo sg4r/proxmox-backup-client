@@ -25,7 +25,7 @@ bash ./pbs.build.sh
 ## check
 ```
 ./proxmox-backup/target/release/proxmox-backup-client version
-client version: 1.0.6
+client version: 1.0.11
 ```
 ## generate-rpm
 build a rpm package with the executable files
