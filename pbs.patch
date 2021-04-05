@@ -38,6 +38,16 @@ index 9483831c..54073a6a 100644
  #pxar = { path = "../pxar", features = [ "tokio-io" ] }
  regex = "1.2"
  rustyline = "7"
+@@ -78,3 +77,9 @@ crossbeam-channel = "0.5"
+ [features]
+ default = []
+ #valgrind = ["valgrind_request"]
++
++[package.metadata.generate-rpm]
++assets = [
++  { source = "target/release/pxar", dest = "/usr/local/sbin/pxar", mode = "0755" },
++  { source = "target/release/proxmox-backup-client", dest = "/usr/local/sbin/proxmox-backup-client", mode = "0755" }
++] 
 diff --git a/src/api2/node.rs b/src/api2/node.rs
 index 1f3e46a9..ce4e449f 100644
 --- a/src/api2/node.rs
