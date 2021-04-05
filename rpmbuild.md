@@ -7,8 +7,8 @@ from the proxmox-backup directory use the ```cargo generate-rpm``` command to cr
 ```
 cargo generate-rpm
 ll target/generate-rpm/
-rpm -qlp target/generate-rpm/proxmox-backup-1.0.6-1.x86_64.rpm
-rpm -qip target/generate-rpm/proxmox-backup-1.0.6-1.x86_64.rpm
+rpm -qlp target/generate-rpm/proxmox-backup-1.0.11-1.x86_64.rpm
+rpm -qip target/generate-rpm/proxmox-backup-1.0.11-1.x86_64.rpm
 ```
 I have not found how to define the list of dependencies with rpm-generate. it is possible to use rpmrebuild to add dependencies.
 ## rpmrebuild
@@ -21,81 +21,80 @@ dnf install rpmrebuild
 ## modification
 Edit the spec file with the rpmrebuild command
 ```
-rpmrebuild -enp target/generate-rpm/proxmox-backup-1.0.6-1.x86_64.rpm
+rpmrebuild -enp target/generate-rpm/proxmox-backup-1.0.11-1.x86_64.rpm
 ```
-add 2 lines 
+add 3 lines 
 ```
 Requires:      libfuse3.so.3()(64bit)
 Requires:      libzstd.so.1()(64bit)
+Requires:      libssl.so.1.1()(64bit)
 ``` 
 after ```Requires:      /bin/sh``` and before ```#suggest```
 ```
-Provides:      proxmox-backup = 1.0.6
-Provides:      proxmox-backup(x86_64) = 1.0.6
+Provides:      proxmox-backup = 1.0.11
+Provides:      proxmox-backup(x86_64) = 1.0.11
 Requires:      /bin/sh
 Requires:      libfuse3.so.3()(64bit)
 Requires:      libzstd.so.1()(64bit)
+Requires:      libssl.so.1.1()(64bit)
 #suggest
 ```
 change Release from 1 to 1.2
 ```
-Version:       1.0.6
+Version:       1.0.11
 Release:       1.2
 License:       AGPL-3
 ```
 save the temporary file and answer y to build the new package
 ```
-"~/.tmp/rpmrebuild.62512/work/spec.2" 60L, 1144C written
+"~/.tmp/rpmrebuild.199172/work/spec.2" 61L, 1187C written
 Do you want to continue ? (y/N) y
-result: /root/rpmbuild/RPMS/x86_64/proxmox-backup-1.0.6-1.2.x86_64.rpm
+result: /root/rpmbuild/RPMS/x86_64/proxmox-backup-1.0.11-1.2.x86_64.rpm
 ```
 ## Install the package on a new host
 ```
-[centos@pbscl82 ~]$ sudo yum install ./proxmox-backup-1.0.6-1.2.x86_64.rpm
-Last metadata expiration check: 0:02:46 ago on mar. 05 janv. 2021 08:18:34 UTC.
+[centos@pbscl82 ~]$ sudo dnf install ./proxmox-backup-1.0.11-1.2.x86_64.rpm
+Failed to set locale, defaulting to C.UTF-8
+Last metadata expiration check: 0:00:13 ago on Mon Apr  5 18:57:37 2021.
 Dependencies resolved.
-=====================================================================================================
- Package                   Architecture      Version                   Repository               Size
-=====================================================================================================
+==========================================================================================================
+ Package                    Architecture       Version                     Repository                Size
+==========================================================================================================
 Installing:
- proxmox-backup            x86_64            1.0.6-1.2                 @commandline            6.0 M
+ proxmox-backup             x86_64             1.0.11-1.2                  @commandline             5.5 M
 Installing dependencies:
- fuse3-libs                x86_64            3.2.1-12.el8              BaseOS                   94 k
- libzstd                   x86_64            1.4.4-1.el8               BaseOS                  266 k
+ fuse3-libs                 x86_64             3.2.1-12.el8                baseos                    94 k
 
 Transaction Summary
-=====================================================================================================
-Install  3 Packages
+==========================================================================================================
+Install  2 Packages
 
-Total size: 6.3 M
-Total download size: 360 k
-Installed size: 21 M
+Total size: 5.6 M
+Total download size: 94 k
+Installed size: 22 M
 Is this ok [y/N]: y
 Downloading Packages:
-(1/2): fuse3-libs-3.2.1-12.el8.x86_64.rpm                             17 kB/s |  94 kB     00:05
-(2/2): libzstd-1.4.4-1.el8.x86_64.rpm                                 47 kB/s | 266 kB     00:05
------------------------------------------------------------------------------------------------------
-Total                                                                 62 kB/s | 360 kB     00:05
+fuse3-libs-3.2.1-12.el8.x86_64.rpm                                        1.1 MB/s |  94 kB     00:00    
+----------------------------------------------------------------------------------------------------------
+Total                                                                     1.0 MB/s |  94 kB     00:00     
 Running transaction check
 Transaction check succeeded.
 Running transaction test
 Transaction test succeeded.
 Running transaction
-  Preparing        :                                                                             1/1
-  Installing       : libzstd-1.4.4-1.el8.x86_64                                                  1/3
-  Installing       : fuse3-libs-3.2.1-12.el8.x86_64                                              2/3
-  Running scriptlet: fuse3-libs-3.2.1-12.el8.x86_64                                              2/3
-  Installing       : proxmox-backup-1.0.6-1.2.x86_64                                             3/3
-  Running scriptlet: proxmox-backup-1.0.6-1.2.x86_64                                             3/3
-  Verifying        : fuse3-libs-3.2.1-12.el8.x86_64                                              1/3
-  Verifying        : libzstd-1.4.4-1.el8.x86_64                                                  2/3
-  Verifying        : proxmox-backup-1.0.6-1.2.x86_64                                             3/3
+  Preparing        :                                                                                  1/1 
+  Installing       : fuse3-libs-3.2.1-12.el8.x86_64                                                   1/2 
+  Running scriptlet: fuse3-libs-3.2.1-12.el8.x86_64                                                   1/2 
+  Installing       : proxmox-backup-1.0.11-1.2.x86_64                                                 2/2 
+  Running scriptlet: proxmox-backup-1.0.11-1.2.x86_64                                                 2/2 
+  Verifying        : fuse3-libs-3.2.1-12.el8.x86_64                                                   1/2 
+  Verifying        : proxmox-backup-1.0.11-1.2.x86_64                                                 2/2 
 
 Installed:
-  proxmox-backup-1.0.6-1.2.x86_64    fuse3-libs-3.2.1-12.el8.x86_64    libzstd-1.4.4-1.el8.x86_64
+  fuse3-libs-3.2.1-12.el8.x86_64                     proxmox-backup-1.0.11-1.2.x86_64                    
 
 Complete!
 [centos@pbscl82 ~]$
 [centos@pbscl82 ~]$ proxmox-backup-client version
-client version: 1.0.6
+client version: 1.0.11
 ```
