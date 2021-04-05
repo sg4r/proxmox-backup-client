@@ -32,9 +32,9 @@ build a rpm package with the executable files
 ```
 cd proxmox-backup/
 cargo generate-rpm
-ll target/generate-rpm/
-total 10876
--rw-r--r--. 1 root root 11134754 17 févr. 21:21 proxmox-backup-1.0.6-1.x86_64.rpm
+[root@pbs proxmox-backup]# ll target/generate-rpm/
+total 8684
+-rw-r--r--. 1 root root 8891410  5 avril 17:40 proxmox-backup-1.0.11-1.x86_64.rpm
 cd ..
 ```
 to build a package with dependency support, read this [rpmbuild.md](rpmbuild.md)
