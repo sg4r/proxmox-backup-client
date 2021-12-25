@@ -2,7 +2,7 @@
 CentOS 7 or 8 cookbook for build Client for Proxmox Backup Server. the client is written in the Rust programming language.
 
 ## rpm package
-rpm package are available in assets of release [v1.0.11](https://github.com/sg4r/proxmox-backup-client/releases/tag/v1.0.11)
+rpm package are available in assets of release [v2.1.2](https://github.com/sg4r/proxmox-backup-client/releases/tag/v2.1.2)
 
 ## install rust
 ```
@@ -14,7 +14,6 @@ source $HOME/.cargo/env
 yum install systemd-devel clang-devel libzstd-devel libacl-devel pam-devel fuse3-devel libuuid-devel openssl-devel
 yum groupinstall 'Development Tools'
 yum install git
-ln -s /lib64/libsgutils2.so.2.0.0 /lib64/libsgutils2.so
 ```
 ## clone proxmox-backup-client cookbook
 ```
@@ -28,7 +27,7 @@ bash ./pbs.build.sh
 ## check
 ```
 ./proxmox-backup/target/release/proxmox-backup-client version
-client version: 1.0.11
+client version: 2.1.2
 ```
 ## generate-rpm
 build a rpm package with the executable files
@@ -36,8 +35,8 @@ build a rpm package with the executable files
 cd proxmox-backup/
 cargo generate-rpm
 [root@pbs proxmox-backup]# ll target/generate-rpm/
-total 8684
--rw-r--r--. 1 root root 8891410  5 avril 17:40 proxmox-backup-1.0.11-1.x86_64.rpm
+total 6104
+-rw-r--r--. 1 root root 6248411 Dec 25 17:01 proxmox-backup-2.1.2-1.x86_64.rpm
 cd ..
 ```
 to build a package with dependency support, read this [rpmbuild.md](rpmbuild.md)
@@ -45,6 +44,7 @@ to build a package with dependency support, read this [rpmbuild.md](rpmbuild.md)
 if you prefer to locally install the binaries, carry out these commands
 ```
 install -Dm755 "proxmox-backup/target/release/proxmox-backup-client" "/usr/local/sbin/proxmox-backup-client"
+install -Dm755 "proxmox-backup/target/release/dump-catalog-shell-cli" "/usr/local/sbin/dump-catalog-shell-cli"
 install -Dm755 "proxmox-backup/target/release/pxar" "/usr/local/sbin/pxar"
 ```
 ## make clean
