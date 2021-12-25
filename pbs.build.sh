@@ -1,12 +1,17 @@
-git clone --branch v1.0.11 git://git.proxmox.com/git/proxmox-backup.git
-git clone git://git.proxmox.com/git/proxmox
-
+git clone git://git.proxmox.com/git/proxmox-backup.git
+cd proxmox-backup
+git checkout bd00ff10e46f865d000f3162124009c7d8d13b6b
+cd ..
+git clone git://git.proxmox.com/git/proxmox.git
 cd proxmox
-git checkout 1fce0ff41ddeb177f92874bf4e95a775cfd99c69
-patch -p1 <../proxmox.patch
+git checkout c0312f3717bd00ace434929e7d3305b058f4aae9
+cd ..
+git clone git://git.proxmox.com/git/proxmox-fuse.git
+git clone git://git.proxmox.com/git/pxar.git
 
-cd ../proxmox-backup
-patch --forward --strip=1 --input=../pbs.patch
-patch --forward --strip=1 --input=../fix-map_err.patch
+patch --forward --strip=1 --input=pbs.patch
 
-cargo build --release --bin proxmox-backup-client --bin pxar --bin dump-catalog-shell-cli
+cd proxmox-backup
+cargo fetch --target x86_64-unknown-linux-gnu
+cargo build --release --package proxmox-backup-client --bin proxmox-backup-client --bin dump-catalog-shell-cli --package pxar-bin --bin pxar
+
