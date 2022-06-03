@@ -1,51 +1,19 @@
-diff -ru -x .git -x target -x tests -x Cargo.lock a/proxmox-backup/.cargo/config b/proxmox-backup/.cargo/config
---- a/proxmox-backup/.cargo/config	2021-12-25 15:43:57.241811568 +0000
-+++ b/proxmox-backup/.cargo/config	2021-12-25 16:33:06.538392513 +0000
+diff --git a/proxmox-backup/.cargo/config b/proxmox-backup/.cargo/config
+deleted file mode 100644
+index 3b5b6e48..00000000
+--- a/proxmox-backup/.cargo/config
++++ /dev/null
 @@ -1,5 +0,0 @@
 -[source]
 -[source.debian-packages]
 -directory = "/usr/share/cargo/registry"
 -[source.crates-io]
 -replace-with = "debian-packages"
-
-diff -ru -x .git -x target -x tests -x Cargo.lock a/proxmox/proxmox/src/sys/linux/procfs/mod.rs b/proxmox/proxmox/src/sys/linux/procfs/mod.rs
---- a/proxmox/proxmox/src/sys/linux/procfs/mod.rs	2021-12-25 15:44:39.028425783 +0000
-+++ b/proxmox/proxmox/src/sys/linux/procfs/mod.rs	2021-12-25 15:33:14.384247729 +0000
-@@ -8,7 +8,7 @@
- use std::sync::RwLock;
- use std::time::Instant;
- 
--use anyhow::*;
-+use anyhow::{format_err, bail, Error};
- use lazy_static::lazy_static;
- use nix::unistd::Pid;
- 
-diff -ru -x .git -x target -x tests -x Cargo.lock a/proxmox/proxmox/src/sys/linux/tty.rs b/proxmox/proxmox/src/sys/linux/tty.rs
---- a/proxmox/proxmox/src/sys/linux/tty.rs	2021-12-25 15:44:39.029425774 +0000
-+++ b/proxmox/proxmox/src/sys/linux/tty.rs	2021-12-25 15:33:14.384247729 +0000
-@@ -2,7 +2,7 @@
- use std::mem::MaybeUninit;
- use std::os::unix::io::AsRawFd;
- 
--use anyhow::*;
-+use anyhow::{format_err, bail, Error};
- use nix::fcntl::OFlag;
- use nix::sys::stat::Mode;
- 
-diff -ru -x .git -x target -x tests -x Cargo.lock a/proxmox/proxmox-router/src/cli/command.rs b/proxmox/proxmox-router/src/cli/command.rs
---- a/proxmox/proxmox-router/src/cli/command.rs	2021-12-25 15:44:39.018425875 +0000
-+++ b/proxmox/proxmox-router/src/cli/command.rs	2021-12-25 15:33:14.382247746 +0000
-@@ -1,4 +1,4 @@
--use anyhow::*;
-+use anyhow::{format_err, Error};
- use serde_json::Value;
- use std::cell::RefCell;
- use std::sync::Arc;
-Only in proxmox-backup-client/proxmox-backup/.cargo: config
-diff -ru -x .git -x target -x tests -x Cargo.lock a/proxmox-backup/Cargo.toml b/proxmox-backup/Cargo.toml
---- a/proxmox-backup/Cargo.toml	2021-12-25 15:44:10.790686481 +0000
-+++ b/proxmox-backup/Cargo.toml	2021-12-25 15:34:41.040486093 +0000
-@@ -25,93 +25,12 @@
+diff --git a/proxmox-backup/Cargo.toml b/proxmox-backup/Cargo.toml
+index 4b7e37a4..79c56f40 100644
+--- a/proxmox-backup/Cargo.toml
++++ b/proxmox-backup/Cargo.toml
+@@ -25,94 +25,12 @@ members = [
      "pbs-config",
      "pbs-datastore",
      "pbs-fuse-loop",
@@ -53,14 +21,14 @@ diff -ru -x .git -x target -x tests -x Cargo.lock a/proxmox-backup/Cargo.toml b/
 -    "proxmox-rrd",
 -    "pbs-tape",
      "pbs-tools",
- 
+
 -    "proxmox-backup-banner",
      "proxmox-backup-client",
 -    "proxmox-file-restore",
 -    "proxmox-restore-daemon",
      "pxar-bin",
  ]
- 
+
 -[lib]
 -name = "proxmox_backup"
 -path = "src/lib.rs"
@@ -73,7 +41,6 @@ diff -ru -x .git -x target -x tests -x Cargo.lock a/proxmox-backup/Cargo.toml b/
 -cidr = "0.2.1"
 -crc32fast = "1"
 -endian_trait = { version = "0.6", features = ["arrays"] }
--env_logger = "0.7"
 -flate2 = "1.0"
 -anyhow = "1.0"
 -thiserror = "1.0"
@@ -85,16 +52,16 @@ diff -ru -x .git -x target -x tests -x Cargo.lock a/proxmox-backup/Cargo.toml b/
 -hyper = { version = "0.14", features = [ "full" ] }
 -lazy_static = "1.4"
 -libc = "0.2"
--log = "0.4"
--nix = "0.19.1"
+-log = "0.4.17"
+-nix = "0.24"
 -num-traits = "0.2"
 -once_cell = "1.3.1"
--openssl = "0.10"
+-openssl = "0.10.38" # currently patched!
 -pam = "0.7"
 -pam-sys = "0.5"
 -percent-encoding = "2.1"
--regex = "1.2"
--rustyline = "7"
+-regex = "1.5.5"
+-rustyline = "9"
 -serde = { version = "1.0", features = ["derive"] }
 -serde_json = "1.0"
 -siphasher = "0.3"
@@ -102,7 +69,7 @@ diff -ru -x .git -x target -x tests -x Cargo.lock a/proxmox-backup/Cargo.toml b/
 -tokio = { version = "1.6", features = [ "fs", "io-util", "io-std", "macros", "net", "parking_lot", "process", "rt", "rt-multi-thread", "signal", "time" ] }
 -tokio-openssl = "0.6.1"
 -tokio-stream = "0.1.0"
--tokio-util = { version = "0.6", features = [ "codec", "io" ] }
+-tokio-util = { version = "0.7", features = [ "codec", "io" ] }
 -tower-service = "0.3.0"
 -udev = "0.4"
 -url = "2.1"
@@ -118,52 +85,70 @@ diff -ru -x .git -x target -x tests -x Cargo.lock a/proxmox-backup/Cargo.toml b/
 -pathpatterns = "0.1.2"
 -pxar = { version = "0.10.1", features = [ "tokio-io" ] }
 -
--proxmox = { version = "0.15.3", features = [ "sortable-macro" ] }
--proxmox-http = { version = "0.5.4", features = [ "client", "http-helpers", "websocket" ] }
+-proxmox-http = { version = "0.6.1", features = [ "client", "http-helpers", "websocket" ] }
 -proxmox-io = "1"
--proxmox-lang = "1"
--proxmox-router = { version = "1.1", features = [ "cli" ] }
--proxmox-schema = { version = "1", features = [ "api-macro" ] }
+-proxmox-lang = "1.1"
+-proxmox-router = { version = "1.2.2", features = [ "cli" ] }
+-proxmox-schema = { version = "1.3.1", features = [ "api-macro" ] }
 -proxmox-section-config = "1"
--proxmox-tfa = { version = "1.3", features = [ "api", "api-types" ] }
--proxmox-time = "1"
+-proxmox-tfa = { version = "2", features = [ "api", "api-types" ] }
+-proxmox-time = "1.1.2"
 -proxmox-uuid = "1"
--proxmox-shared-memory = "0.1.1"
--proxmox-sys = "0.1.2"
+-proxmox-serde = "0.1"
+-proxmox-shared-memory = "0.2"
+-proxmox-sys = { version = "0.3", features = [ "sortable-macro" ] }
+-proxmox-compression = "0.1"
 -
--proxmox-acme-rs = "0.3"
+-
+-proxmox-acme-rs = "0.4"
 -proxmox-apt = "0.8.0"
--proxmox-async = "0.2"
+-proxmox-async = "0.4"
 -proxmox-openid = "0.9.0"
 -
  pbs-api-types = { path = "pbs-api-types" }
  pbs-buildcfg = { path = "pbs-buildcfg" }
  pbs-client = { path = "pbs-client" }
-@@ -125,12 +44,32 @@
+@@ -126,27 +44,33 @@ pbs-tape = { path = "pbs-tape" }
  # Local path overrides
  # NOTE: You must run `cargo update` after changing this for it to take effect!
  [patch.crates-io]
--#proxmox = { path = "../proxmox/proxmox" }
+-#proxmox-acme-rs = { path = "../proxmox-acme-rs" }
+-#proxmox-apt = { path = "../proxmox-apt" }
+-#proxmox-async = { path = "../proxmox/proxmox-async" }
+-#proxmox-compression = { path = "../proxmox/proxmox-compression" }
+-#proxmox-borrow = { path = "../proxmox/proxmox-borrow" }
+-#proxmox-fuse = { path = "../proxmox-fuse" }
 -#proxmox-http = { path = "../proxmox/proxmox-http" }
-+proxmox = { path = "../proxmox/proxmox" }
+-#proxmox-io = { path = "../proxmox/proxmox-io" }
+-#proxmox-lang = { path = "../proxmox/proxmox-lang" }
+-#proxmox-openid = { path = "../proxmox-openid-rs" }
+-#proxmox-router = { path = "../proxmox/proxmox-router" }
+-#proxmox-schema = { path = "../proxmox/proxmox-schema" }
+-#proxmox-section-config = { path = "../proxmox/proxmox-section-config" }
+-#proxmox-shared-memory = { path = "../proxmox/proxmox-shared-memory" }
+-#proxmox-sys = { path = "../proxmox/proxmox-sys" }
+-#proxmox-serde = { path = "../proxmox/proxmox-serde" }
+-#proxmox-tfa = { path = "../proxmox/proxmox-tfa" }
+-#proxmox-time = { path = "../proxmox/proxmox-time" }
+-#proxmox-uuid = { path = "../proxmox/proxmox-uuid" }
+-#pxar = { path = "../pxar" }
 +proxmox-async = { path = "../proxmox/proxmox-async" }
++proxmox-compression = { path = "../proxmox/proxmox-compression" }
 +proxmox-borrow = { path = "../proxmox/proxmox-borrow" }
++proxmox-fuse = { path = "../proxmox-fuse" }
 +proxmox-http = { path = "../proxmox/proxmox-http" }
 +proxmox-io = { path = "../proxmox/proxmox-io" }
 +proxmox-lang = { path = "../proxmox/proxmox-lang" }
++proxmox-router = { path = "../proxmox/proxmox-router" }
++proxmox-schema = { path = "../proxmox/proxmox-schema" }
 +proxmox-section-config = { path = "../proxmox/proxmox-section-config" }
++proxmox-serde = { path = "../proxmox/proxmox-serde" }
 +proxmox-shared-memory = { path = "../proxmox/proxmox-shared-memory" }
 +proxmox-sys = { path = "../proxmox/proxmox-sys" }
 +proxmox-time = { path = "../proxmox/proxmox-time" }
 +proxmox-uuid = { path = "../proxmox/proxmox-uuid" }
-+proxmox-router = { path = "../proxmox/proxmox-router" }
- #proxmox-tfa = { path = "../proxmox/proxmox-tfa" }
--#proxmox-schema = { path = "../proxmox/proxmox-schema" }
--#pxar = { path = "../pxar" }
-+proxmox-schema = { path = "../proxmox/proxmox-schema" }
-+proxmox-fuse = { path = "../proxmox-fuse" }
 +pxar = { path = "../pxar" }
- 
+
  [features]
  default = []
  #valgrind = ["valgrind_request"]
@@ -174,5 +159,6 @@ diff -ru -x .git -x target -x tests -x Cargo.lock a/proxmox-backup/Cargo.toml b/
 +  { source = "target/release/dump-catalog-shell-cli", dest = "/usr/local/sbin/dump-catalog-shell-cli", mode = "0755" },
 +  { source = "target/release/proxmox-backup-client", dest = "/usr/local/sbin/proxmox-backup-client", mode = "0755" }
 +]
++
 +
 +
