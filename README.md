@@ -1,8 +1,8 @@
 # proxmox-backup-client
-CentOS 7 or 8 cookbook for build Client for Proxmox Backup Server. the client is written in the Rust programming language.
+Rocky Linux 8 and Fedora 36 cookbook for build Client for Proxmox Backup Server. the client is written in the Rust programming language.
 
 ## rpm package
-rpm package are available in assets of release [v2.1.2](https://github.com/sg4r/proxmox-backup-client/releases/tag/v2.1.2)
+rpm package are available in assets of release [v2.2.2](https://github.com/sg4r/proxmox-backup-client/releases/tag/v2.2.2)
 
 ## install rust
 ```
@@ -27,7 +27,7 @@ bash ./pbs.build.sh
 ## check
 ```
 ./proxmox-backup/target/release/proxmox-backup-client version
-client version: 2.1.2
+client version: 2.2.2
 ```
 ## generate-rpm
 build a rpm package with the executable files
@@ -35,8 +35,8 @@ build a rpm package with the executable files
 cd proxmox-backup/
 cargo generate-rpm
 [root@pbs proxmox-backup]# ll target/generate-rpm/
-total 6104
--rw-r--r--. 1 root root 6248411 Dec 25 17:01 proxmox-backup-2.1.2-1.x86_64.rpm
+total 6344
+-rw-r--r--. 1 root root 6494249 Jun  3 18:51 proxmox-backup-2.2.2-1.x86_64.rpm
 cd ..
 ```
 to build a package with dependency support, read this [rpmbuild.md](rpmbuild.md)
