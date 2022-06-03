@@ -1,10 +1,10 @@
 git clone git://git.proxmox.com/git/proxmox-backup.git
 cd proxmox-backup
-git checkout bd00ff10e46f865d000f3162124009c7d8d13b6b
+git checkout 519ca9d01057991aaed4ab2bfd28c6e403eba869
 cd ..
 git clone git://git.proxmox.com/git/proxmox.git
 cd proxmox
-git checkout c0312f3717bd00ace434929e7d3305b058f4aae9
+git checkout 7667e549a539edff6f33cbf35d0f880383ebec61
 cd ..
 git clone git://git.proxmox.com/git/proxmox-fuse.git
 git clone git://git.proxmox.com/git/pxar.git
