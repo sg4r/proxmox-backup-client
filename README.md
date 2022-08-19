@@ -2,7 +2,8 @@
 Rocky Linux 8 and Fedora 36 cookbook for build Client for Proxmox Backup Server. the client is written in the Rust programming language.
 
 ## rpm package
-rpm package are available in assets of release [v2.2.2](https://github.com/sg4r/proxmox-backup-client/releases/tag/v2.2.2)
+rpm package for Fedora and Rocky linux8 are available in assets of release [v2.2.2](https://github.com/sg4r/proxmox-backup-client/releases/tag/v2.2.2)  
+rpm package for centos7 [v2.1.2](https://github.com/sg4r/proxmox-backup-client/releases/download/v2.1.2/proxmox-backup-2.1.2-1.x86_64.el7.rpm)
 
 ## install rust
 ```
